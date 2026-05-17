@@ -10,17 +10,46 @@ API_URL = "https://ccapi.scydao.com/api/v1/auth/register"
 MAX_RETRIES = 3
 
 
-FIRST_NAMES = [
+# Nama orang
+NAMA_ORANG = [
     "adi", "agus", "ahmad", "andi", "ari", "arif", "bayu", "budi", "cahya",
     "dani", "dedi", "dian", "dwi", "eka", "fajar", "feri", "galih", "gilang",
     "hadi", "hendra", "indra", "irfan", "joko", "kurnia", "luki", "made",
     "nanda", "nova", "okta", "putra", "rafi", "rahmat", "rian", "rizki",
     "sandi", "satria", "surya", "taufik", "wahyu", "yoga", "yusuf", "zainal",
-    "anisa", "bella", "citra", "dewi", "eka", "fitri", "gita", "hani",
-    "ika", "jeni", "kartika", "lina", "maya", "nita", "putri", "rani",
-    "sari", "tika", "wati", "yuli", "zahra", "amel", "bunga", "dinda",
+    "anisa", "bella", "citra", "dewi", "fitri", "gita", "hani", "ika",
+    "jeni", "kartika", "lina", "maya", "nita", "putri", "rani", "sari",
+    "tika", "wati", "yuli", "zahra", "amel", "bunga", "dinda", "raka",
 ]
 
+# Nama hewan
+NAMA_HEWAN = [
+    "kucing", "anjing", "kelinci", "harimau", "singa", "elang", "rajawali",
+    "dolphin", "panda", "koala", "rubah", "serigala", "beruang", "kuda",
+    "burung", "ikan", "penyu", "naga", "merak", "garuda", "falcon",
+    "tiger", "eagle", "wolf", "bear", "lion", "fox", "deer", "owl",
+    "hawk", "raven", "phoenix", "panther", "cobra", "viper", "jaguar",
+]
+
+# Nama buah
+NAMA_BUAH = [
+    "apel", "mangga", "jeruk", "anggur", "semangka", "melon", "pepaya",
+    "durian", "rambutan", "salak", "jambu", "nanas", "pisang", "kelapa",
+    "leci", "cherry", "strawberry", "blueberry", "kiwi", "alpukat",
+    "lemon", "persik", "delima", "markisa", "manggis", "sawo", "duku",
+    "ceri", "plum", "grape", "mango", "peach", "berry", "lime", "olive",
+]
+
+# Nama tanaman
+NAMA_TANAMAN = [
+    "mawar", "melati", "anggrek", "tulip", "sakura", "lavender", "dahlia",
+    "kenanga", "teratai", "kamboja", "aster", "lily", "violet", "iris",
+    "bamboo", "cemara", "pinus", "beringin", "jati", "mahoni", "akasia",
+    "cendana", "rosemary", "jasmine", "orchid", "lotus", "sunflower",
+    "daisy", "flora", "ivy", "fern", "moss", "sage", "basil", "mint",
+]
+
+# Nama belakang / kata tambahan
 LAST_NAMES = [
     "pratama", "saputra", "wijaya", "putra", "kusuma", "nugraha", "hidayat",
     "permana", "santoso", "wibowo", "utama", "lestari", "sari", "rahayu",
@@ -29,14 +58,35 @@ LAST_NAMES = [
     "hakim", "aditya", "pranata", "laksmana", "anggara", "kurniawan",
 ]
 
+ALL_NAMES = NAMA_ORANG + NAMA_HEWAN + NAMA_BUAH + NAMA_TANAMAN
+
 
 def generate_random_email(domain="gmail.com"):
-    """Generate email dengan nama + angka biar keliatan natural."""
-    first = random.choice(FIRST_NAMES)
-    last = random.choice(LAST_NAMES)
+    """Generate email dengan nama (orang/hewan/buah/tanaman) + angka biar natural."""
+    style = random.randint(1, 4)
     num = random.randint(1, 9999)
     separator = random.choice(["", ".", "_"])
-    return f"{first}{separator}{last}{num}@{domain}"
+
+    if style == 1:
+        # nama_orang + last_name + angka (contoh: rizki.wibowo482)
+        first = random.choice(NAMA_ORANG)
+        last = random.choice(LAST_NAMES)
+        return f"{first}{separator}{last}{num}@{domain}"
+    elif style == 2:
+        # nama + hewan + angka (contoh: bayu_elang2031)
+        name = random.choice(NAMA_ORANG)
+        hewan = random.choice(NAMA_HEWAN)
+        return f"{name}{separator}{hewan}{num}@{domain}"
+    elif style == 3:
+        # buah/tanaman + angka (contoh: mangga.segar721)
+        kata1 = random.choice(NAMA_BUAH + NAMA_TANAMAN)
+        kata2 = random.choice(LAST_NAMES + NAMA_ORANG)
+        return f"{kata1}{separator}{kata2}{num}@{domain}"
+    else:
+        # random combo dari semua kategori (contoh: sakura_pratama55)
+        kata1 = random.choice(ALL_NAMES)
+        kata2 = random.choice(ALL_NAMES + LAST_NAMES)
+        return f"{kata1}{separator}{kata2}{num}@{domain}"
 
 
 def create_account(email, password, invitation_code, max_retries=MAX_RETRIES):
