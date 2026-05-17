@@ -15,8 +15,8 @@ Bot Python untuk membuat akun ccode.dev secara otomatis.
 
 ```bash
 # Clone repo
-git clone https://github.com/gondolpancak-boop/ccode-bot.git
-cd ccode-bot
+git clone https://github.com/gondolpancak-boop/AgentApi.git
+cd AgentApi
 
 # Install dependency
 pip install requests
