@@ -3,90 +3,40 @@ import json
 import time
 import re
 import random
-import string
+
 import argparse
 
 API_URL = "https://ccapi.scydao.com/api/v1/auth/register"
 MAX_RETRIES = 3
 
 
-# Nama orang
-NAMA_ORANG = [
-    "adi", "agus", "ahmad", "andi", "ari", "arif", "bayu", "budi", "cahya",
-    "dani", "dedi", "dian", "dwi", "eka", "fajar", "feri", "galih", "gilang",
-    "hadi", "hendra", "indra", "irfan", "joko", "kurnia", "luki", "made",
-    "nanda", "nova", "okta", "putra", "rafi", "rahmat", "rian", "rizki",
-    "sandi", "satria", "surya", "taufik", "wahyu", "yoga", "yusuf", "zainal",
-    "anisa", "bella", "citra", "dewi", "fitri", "gita", "hani", "ika",
-    "jeni", "kartika", "lina", "maya", "nita", "putri", "rani", "sari",
-    "tika", "wati", "yuli", "zahra", "amel", "bunga", "dinda", "raka",
-]
+# 10 nama orang
+NAMA_ORANG = ["andi", "budi", "rizki", "dewi", "putri", "fajar", "wahyu", "sari", "agus", "maya"]
 
-# Nama hewan
-NAMA_HEWAN = [
-    "kucing", "anjing", "kelinci", "harimau", "singa", "elang", "rajawali",
-    "dolphin", "panda", "koala", "rubah", "serigala", "beruang", "kuda",
-    "burung", "ikan", "penyu", "naga", "merak", "garuda", "falcon",
-    "tiger", "eagle", "wolf", "bear", "lion", "fox", "deer", "owl",
-    "hawk", "raven", "phoenix", "panther", "cobra", "viper", "jaguar",
-]
+# 10 nama hewan
+NAMA_HEWAN = ["kucing", "elang", "singa", "panda", "rubah", "kelinci", "naga", "rajawali", "harimau", "dolphin"]
 
-# Nama buah
-NAMA_BUAH = [
-    "apel", "mangga", "jeruk", "anggur", "semangka", "melon", "pepaya",
-    "durian", "rambutan", "salak", "jambu", "nanas", "pisang", "kelapa",
-    "leci", "cherry", "strawberry", "blueberry", "kiwi", "alpukat",
-    "lemon", "persik", "delima", "markisa", "manggis", "sawo", "duku",
-    "ceri", "plum", "grape", "mango", "peach", "berry", "lime", "olive",
-]
+# 10 nama tanaman
+NAMA_TANAMAN = ["mawar", "melati", "sakura", "anggrek", "lavender", "dahlia", "teratai", "tulip", "cemara", "bamboo"]
 
-# Nama tanaman
-NAMA_TANAMAN = [
-    "mawar", "melati", "anggrek", "tulip", "sakura", "lavender", "dahlia",
-    "kenanga", "teratai", "kamboja", "aster", "lily", "violet", "iris",
-    "bamboo", "cemara", "pinus", "beringin", "jati", "mahoni", "akasia",
-    "cendana", "rosemary", "jasmine", "orchid", "lotus", "sunflower",
-    "daisy", "flora", "ivy", "fern", "moss", "sage", "basil", "mint",
-]
+# 10 nama kota
+NAMA_KOTA = ["bandung", "jakarta", "malang", "jogja", "bali", "medan", "solo", "bogor", "semarang", "depok"]
 
-# Nama belakang / kata tambahan
-LAST_NAMES = [
-    "pratama", "saputra", "wijaya", "putra", "kusuma", "nugraha", "hidayat",
-    "permana", "santoso", "wibowo", "utama", "lestari", "sari", "rahayu",
-    "purnama", "mahendra", "setiawan", "fitriani", "handoko", "susanto",
-    "gunawan", "hartono", "suryadi", "firmansyah", "ramadhan", "maulana",
-    "hakim", "aditya", "pranata", "laksmana", "anggara", "kurniawan",
-]
+# 10 nama ikan
+NAMA_IKAN = ["nemo", "arwana", "koi", "lele", "pari", "hiu", "salmon", "tuna", "cupang", "gurami"]
 
-ALL_NAMES = NAMA_ORANG + NAMA_HEWAN + NAMA_BUAH + NAMA_TANAMAN
+# Semua kategori dalam satu list
+KATEGORI = [NAMA_ORANG, NAMA_HEWAN, NAMA_TANAMAN, NAMA_KOTA, NAMA_IKAN]
 
 
 def generate_random_email(domain="gmail.com"):
-    """Generate email dengan nama (orang/hewan/buah/tanaman) + angka biar natural."""
-    style = random.randint(1, 4)
+    """Generate email: ambil 2 kategori random, gabung + angka."""
+    kat1, kat2 = random.sample(KATEGORI, 2)
+    kata1 = random.choice(kat1)
+    kata2 = random.choice(kat2)
     num = random.randint(1, 9999)
     separator = random.choice(["", ".", "_"])
-
-    if style == 1:
-        # nama_orang + last_name + angka (contoh: rizki.wibowo482)
-        first = random.choice(NAMA_ORANG)
-        last = random.choice(LAST_NAMES)
-        return f"{first}{separator}{last}{num}@{domain}"
-    elif style == 2:
-        # nama + hewan + angka (contoh: bayu_elang2031)
-        name = random.choice(NAMA_ORANG)
-        hewan = random.choice(NAMA_HEWAN)
-        return f"{name}{separator}{hewan}{num}@{domain}"
-    elif style == 3:
-        # buah/tanaman + angka (contoh: mangga.segar721)
-        kata1 = random.choice(NAMA_BUAH + NAMA_TANAMAN)
-        kata2 = random.choice(LAST_NAMES + NAMA_ORANG)
-        return f"{kata1}{separator}{kata2}{num}@{domain}"
-    else:
-        # random combo dari semua kategori (contoh: sakura_pratama55)
-        kata1 = random.choice(ALL_NAMES)
-        kata2 = random.choice(ALL_NAMES + LAST_NAMES)
-        return f"{kata1}{separator}{kata2}{num}@{domain}"
+    return f"{kata1}{separator}{kata2}{num}@{domain}"
 
 
 def create_account(email, password, invitation_code, max_retries=MAX_RETRIES):
