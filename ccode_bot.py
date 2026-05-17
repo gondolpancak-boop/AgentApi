@@ -10,10 +10,33 @@ API_URL = "https://ccapi.scydao.com/api/v1/auth/register"
 MAX_RETRIES = 3
 
 
+FIRST_NAMES = [
+    "adi", "agus", "ahmad", "andi", "ari", "arif", "bayu", "budi", "cahya",
+    "dani", "dedi", "dian", "dwi", "eka", "fajar", "feri", "galih", "gilang",
+    "hadi", "hendra", "indra", "irfan", "joko", "kurnia", "luki", "made",
+    "nanda", "nova", "okta", "putra", "rafi", "rahmat", "rian", "rizki",
+    "sandi", "satria", "surya", "taufik", "wahyu", "yoga", "yusuf", "zainal",
+    "anisa", "bella", "citra", "dewi", "eka", "fitri", "gita", "hani",
+    "ika", "jeni", "kartika", "lina", "maya", "nita", "putri", "rani",
+    "sari", "tika", "wati", "yuli", "zahra", "amel", "bunga", "dinda",
+]
+
+LAST_NAMES = [
+    "pratama", "saputra", "wijaya", "putra", "kusuma", "nugraha", "hidayat",
+    "permana", "santoso", "wibowo", "utama", "lestari", "sari", "rahayu",
+    "purnama", "mahendra", "setiawan", "fitriani", "handoko", "susanto",
+    "gunawan", "hartono", "suryadi", "firmansyah", "ramadhan", "maulana",
+    "hakim", "aditya", "pranata", "laksmana", "anggara", "kurniawan",
+]
+
+
 def generate_random_email(domain="gmail.com"):
-    """Generate email random otomatis."""
-    rand = ''.join(random.choices(string.ascii_lowercase + string.digits, k=12))
-    return f"{rand}@{domain}"
+    """Generate email dengan nama + angka biar keliatan natural."""
+    first = random.choice(FIRST_NAMES)
+    last = random.choice(LAST_NAMES)
+    num = random.randint(1, 9999)
+    separator = random.choice(["", ".", "_"])
+    return f"{first}{separator}{last}{num}@{domain}"
 
 
 def create_account(email, password, invitation_code, max_retries=MAX_RETRIES):
