@@ -1,97 +1,140 @@
-# Ccode.dev Auto Account Creator Bot
+# AgentApi
 
-Bot Python untuk membuat akun ccode.dev secara otomatis.
+Kumpulan bot & agent otomatis.
 
-## Fitur
+---
 
-- Email random otomatis (tidak perlu punya Gmail asli)
-- Auto retry kalau kena rate limit
-- Mode interaktif (ditanya satu per satu)
-- Mode command line (langsung jalankan dengan parameter)
-- Hasil disimpan ke file JSON
-- Bisa atur jumlah akun, password, kode referral, delay
+## 🤖 Hermes Telegram Agent
 
-## Instalasi
+Bot Telegram bertenaga AI menggunakan model **Hermes** via **OpenRouter**. Dilengkapi dengan 9 command routes dan router system untuk menangani berbagai jenis permintaan.
+
+### Fitur
+
+- 💬 **Chat Bebas** - Percakapan natural dengan AI Hermes
+- 💻 **Code Helper** - Bantuan coding, debugging, dan penjelasan teknis
+- 🌐 **Translator** - Terjemahan otomatis antar bahasa
+- 📝 **Summarizer** - Ringkasan teks panjang
+- ✨ **Creative Writer** - Penulisan kreatif dan imajinatif
+- ❓ **Q&A** - Jawab pertanyaan faktual
+- 🔄 **Reset** - Reset riwayat percakapan
+- 🧠 **Conversation Memory** - Mengingat konteks percakapan
+- 🛣️ **9-Route System** - Router modular untuk command handling
+
+### Command Routes
+
+| # | Command | Fungsi |
+|---|---------|--------|
+| 1 | `/start` | Welcome & pengenalan bot |
+| 2 | `/help` | Daftar semua perintah |
+| 3 | `/chat <teks>` | Chat bebas dengan AI |
+| 4 | `/code <request>` | Bantuan coding |
+| 5 | `/translate <teks>` | Terjemahan bahasa |
+| 6 | `/summarize <teks>` | Ringkas teks |
+| 7 | `/imagine <prompt>` | Penulisan kreatif |
+| 8 | `/ask <pertanyaan>` | Tanya fakta |
+| 9 | `/reset` | Reset percakapan |
+
+Kirim pesan tanpa command untuk chat bebas langsung!
+
+### Arsitektur
+
+```
+hermes_telegram/
+├── __init__.py          # Package init
+├── config.py            # Konfigurasi dari environment variables
+├── agent.py             # Hermes AI agent (OpenRouter API)
+├── router.py            # Message router system (9 routes)
+├── handlers/
+│   ├── __init__.py
+│   └── commands.py      # Semua command handlers
+└── main.py              # Entry point & bot setup
+```
+
+### Instalasi & Setup
 
 ```bash
 # Clone repo
-git clone https://github.com/gondolpancak-boop/ccode-bot.git
-cd ccode-bot
+git clone https://github.com/gondolpancak-boop/AgentApi.git
+cd AgentApi
 
-# Install dependency
-pip install requests
+# Install dependencies
+pip install -r requirements.txt
+
+# Copy dan isi konfigurasi
+cp .env.example .env
+# Edit .env dengan token kamu
 ```
 
-## Cara Pakai
+### Konfigurasi
 
-### Mode Interaktif
+Buat file `.env` dengan isi:
 
-Tinggal jalankan tanpa parameter, nanti ditanya satu per satu:
+```env
+# [WAJIB] Token dari @BotFather di Telegram
+TELEGRAM_BOT_TOKEN=your_token_here
+
+# [WAJIB] API Key dari https://openrouter.ai/keys
+OPENROUTER_API_KEY=your_key_here
+
+# [OPSIONAL] Model (default: Hermes 3 gratis)
+HERMES_MODEL=nousresearch/hermes-3-llama-3.1-405b:free
+```
+
+**Cara dapat token:**
+1. **Telegram Bot Token**: Chat ke [@BotFather](https://t.me/BotFather) di Telegram → `/newbot` → ikuti instruksi
+2. **OpenRouter API Key**: Daftar di [openrouter.ai](https://openrouter.ai) → buat API key di dashboard
+
+### Menjalankan Bot
 
 ```bash
+# Load env variables dan jalankan
+export $(cat .env | xargs)
+python run_hermes.py
+
+# Atau langsung set env variables
+TELEGRAM_BOT_TOKEN=xxx OPENROUTER_API_KEY=yyy python run_hermes.py
+```
+
+### Contoh Penggunaan
+
+```
+User: /start
+Bot:  👋 Halo! Saya Hermes Agent...
+
+User: /code buatkan fungsi fibonacci di Python
+Bot:  def fibonacci(n): ...
+
+User: /translate Good morning, how are you?
+Bot:  Selamat pagi, apa kabar? ...
+
+User: /summarize [teks panjang]
+Bot:  Ringkasan: ...
+
+User: Halo, siapa kamu?
+Bot:  Halo! Saya Hermes, asisten AI kamu...
+```
+
+---
+
+## 🔧 Ccode.dev Auto Account Creator Bot
+
+Bot Python untuk membuat akun ccode.dev secara otomatis.
+
+### Fitur
+
+- Email random otomatis
+- Auto retry kalau kena rate limit
+- Mode interaktif & command line
+- Hasil disimpan ke file JSON
+
+### Cara Pakai
+
+```bash
+# Mode interaktif
 python ccode_bot.py
+
+# Mode command line
+python ccode_bot.py -n 10 -a KODE_REFF
 ```
 
-Output:
-```
-============================================================
-  Ccode.dev Auto Account Creator Bot
-  Mode Interaktif
-============================================================
-
-Mau bikin berapa akun? [default: 1]: 5
-Kode referral/invitation: KODE_REFF_KAMU
-Password untuk semua akun [default: 241404]: 
-Delay antar request (detik) [default: 3]: 
-Nama file output [default: accounts.json]: 
-```
-
-### Mode Command Line
-
-Langsung bikin akun tanpa ditanya:
-
-```bash
-# Bikin 10 akun
-python ccode_bot.py -n 10 -a KODE_REFF_KAMU
-
-# Bikin 5 akun dengan password custom
-python ccode_bot.py -n 5 -a KODE_REFF_KAMU -p mypassword123
-
-# Bikin 20 akun dengan delay 5 detik
-python ccode_bot.py -n 20 -a KODE_REFF_KAMU -d 5
-
-# Bikin 10 akun dan simpan ke file custom
-python ccode_bot.py -n 10 -a KODE_REFF_KAMU -o hasil.json
-```
-
-### Parameter
-
-| Parameter | Keterangan | Default |
-|-----------|------------|---------|
-| `-n` / `--count` | Jumlah akun yang mau dibuat | (wajib di CLI mode) |
-| `-a` / `--aff` | Kode referral/invitation | (wajib) |
-| `-p` / `--password` | Password untuk semua akun | `241404` |
-| `-d` / `--delay` | Delay antar request (detik) | `3` |
-| `-o` / `--output` | File output hasil | `accounts.json` |
-
-## Output
-
-Hasil pembuatan akun disimpan ke file `accounts.json`:
-
-```json
-[
-  {
-    "email": "abc123xyz@gmail.com",
-    "password": "241404",
-    "status": "SUCCESS",
-    "user_id": 12345,
-    "balance": 1
-  }
-]
-```
-
-## Tips
-
-- Kalau kena rate limit, bot otomatis tunggu lalu retry (max 3x)
-- Disarankan pakai delay minimal 3 detik supaya tidak sering kena rate limit
-- Kalau mau bikin banyak akun (50+), pakai delay 5 detik biar aman
+Lihat `ccode_bot.py` untuk detail lengkap.
