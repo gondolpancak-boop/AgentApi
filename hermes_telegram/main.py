@@ -2,6 +2,9 @@
 
 import logging
 import sys
+from pathlib import Path
+
+from dotenv import load_dotenv
 
 from .agent import HermesAgent
 from .config import Config
@@ -17,6 +20,9 @@ logger = logging.getLogger(__name__)
 def main() -> None:
     """Start the Hermes Telegram bot."""
     from telegram.ext import Application
+
+    env_path = Path(__file__).resolve().parent.parent / ".env"
+    load_dotenv(env_path)
 
     config = Config.from_env()
     errors = config.validate()
